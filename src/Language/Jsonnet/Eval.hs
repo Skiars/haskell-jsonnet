@@ -22,8 +22,9 @@ import Control.Lens (locally, view)
 import Control.Monad.Except
 import qualified Data.Aeson as JSON
 import Data.Aeson.Text (encodeToLazyText)
+import Data.Aeson.KeyMap (fromHashMapText)
 import Data.Bifunctor (second)
-import Data.Bits
+import Data.Bits ((.&.), (.|.), xor, shiftL, shiftR, complement)
 import Data.ByteString (ByteString)
 import Data.Foldable
 import Data.HashMap.Lazy (HashMap)
@@ -401,7 +402,7 @@ manifest = \case
   VBool b -> pure (JSON.Bool b)
   VStr s -> pure (JSON.String s)
   VNum n -> pure (JSON.Number n)
-  VObj vs -> JSON.Object <$> mapM manifest (visibleKeys vs)
+  VObj vs -> JSON.Object <$> mapM manifest (fromHashMapText (visibleKeys vs))
   VArr vs -> JSON.Array <$> mapM manifest vs
   VClos {} -> throwE (ManifestError "function")
   VFun _ -> throwE (ManifestError "function")

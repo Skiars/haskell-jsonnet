@@ -24,6 +24,7 @@ import Control.Monad.Except
 import Control.Monad.State
 import Data.Aeson (FromJSON (..))
 import qualified Data.Aeson as JSON
+import Data.Aeson.KeyMap (toHashMapText)
 import qualified Data.ByteString as B
 import Data.Foldable (foldrM)
 import Data.HashMap.Lazy (HashMap)
@@ -123,7 +124,7 @@ instance FromJSON Value where
     JSON.Number n -> pure $ VNum n
     JSON.String s -> pure $ VStr s
     JSON.Array a -> VArr <$> traverse parseJSON a
-    JSON.Object o -> VObj . f <$> traverse parseJSON o
+    JSON.Object o -> VObj . f . toHashMapText <$> traverse parseJSON o
     where
       f :: HashMap Text Value -> Object
       f o =

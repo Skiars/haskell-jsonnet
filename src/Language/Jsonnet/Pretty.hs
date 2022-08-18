@@ -15,6 +15,7 @@ module Language.Jsonnet.Pretty where
 import Control.Applicative (Const (..))
 import qualified Data.Aeson as JSON
 import qualified Data.Aeson.Text as JSON (encodeToLazyText)
+import Data.Aeson.KeyMap (toHashMapText)
 import Data.Bifunctor (bimap, first)
 import Data.Bool (bool)
 import Data.Fix
@@ -85,7 +86,7 @@ ppJson i = \case
   JSON.Bool False -> pfalse
   JSON.String s -> ppString s
   JSON.Array a -> ppArray a
-  JSON.Object o -> ppObject o
+  JSON.Object o -> ppObject (toHashMapText o)
   where
     encloseSep l r s ds = case ds of
       [] -> l <> r
